@@ -12,6 +12,14 @@ server.use(cors())
 
 server.use(express.json())
 
+server.use((err, req, res, next) => {
+    if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+        console.error("Bad JSON received");
+        return res.status(400).json({ error: "Invalid JSON payload" });
+    }
+    next();
+})
+
 server.use(router)
 
 require('./connnection')
